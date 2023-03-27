@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const API_BASE_URL_ALPHA = "https://alpha-www.lezhinus.com/lz-api";
-const API_BASE_URL_BETA = "https://beta-www.lezhinus.com/lz-api";
-const token = '98d3bbb4-7068-4455-a810-851949cea473';
+const API_BASE_URL_ALPHA = process.env.API_BASE_URL_ALPHA;
+const API_BASE_URL_BETA = process.env.API_BASE_URL_BETA;
+const token = process.env.TOKEN;
 
 class compareService {
   // add API service
