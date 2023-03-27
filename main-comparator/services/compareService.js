@@ -5,6 +5,21 @@ const API_BASE_URL_BETA = "https://beta-www.lezhinus.com/lz-api";
 const token = '98d3bbb4-7068-4455-a810-851949cea473';
 
 class compareService {
+  // add API service
+  addNewAPI(header, endpoint, data, type) {
+    const headers = header;
+
+    if(type == 'get'){
+      return axios.get(API_BASE_URL_ALPHA + endpoint, {data}, {headers});
+    } else if (type == 'post') {
+      return axios.post(API_BASE_URL_ALPHA + endpoint, {data}, {headers});
+    } else if (type == 'put') {
+      return axios.post(API_BASE_URL_ALPHA + endpoint, {data}, {headers});
+    } else if (type == 'del') {
+      return axios.post(API_BASE_URL_ALPHA + endpoint, {data}, {headers});
+    }
+  }
+
   // {{base_url}}/users/signin
   postLoginAlpha(username, password) {
     const headers = {
@@ -150,6 +165,74 @@ class compareService {
       Authorization: `Bearer ${access_token}`,
     };
     return axios.get(API_BASE_URL_BETA + `/v2/users/${userId}/connections/${socialType}`, { headers })
+  }
+
+  // {{base_url}}/v2/users/{{me}/genres}
+  getUserMeGenresAlpha(access_token, userId) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    };
+    return axios.get(API_BASE_URL_ALPHA + `/v2/users/${userId}/genres`, { headers })
+  }
+
+  getUserMeGenresBeta(access_token, userId) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    };
+    return axios.get(API_BASE_URL_BETA + `/v2/users/${userId}/genres`, { headers })
+  }
+
+  // {{base_url}}/v2/users/{{me}/balance}
+  getUserMeBalanceAlpha(access_token, userId) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    };
+    return axios.get(API_BASE_URL_ALPHA + `/v2/users/${userId}/balance`, { headers })
+  }
+
+  getUserMeBalanceBeta(access_token, userId) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    };
+    return axios.get(API_BASE_URL_BETA + `/v2/users/${userId}/balance`, { headers })
+  }
+
+  // {{base_url}}/v2/users/{{me}/ga}
+  getUserMeGAAlpha(access_token, userId) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    };
+    return axios.get(API_BASE_URL_ALPHA + `/v2/users/${userId}/ga`, { headers })
+  }
+
+  getUserMeGABeta(access_token, userId) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    };
+    return axios.get(API_BASE_URL_BETA + `/v2/users/${userId}/ga`, { headers })
+  }
+
+  // {{base_url}}/v2/users/{{me}/badge-counts}
+  getUserMeBadgeCountAlpha(access_token, userId) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    };
+    return axios.get(API_BASE_URL_ALPHA + `/v2/users/${userId}/badge-counts`, { headers })
+  }
+
+  getUserMeBadgeCountBeta(access_token, userId) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    };
+    return axios.get(API_BASE_URL_BETA + `/v2/users/${userId}/badge-counts`, { headers })
   }
 
 }

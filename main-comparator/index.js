@@ -5,29 +5,17 @@ import compareService from './services/compareService.js';
 import './style.css';
 
 function App() {
-  const totalGetAPI = 6;
+  const totalGetAPI = 11;
+  const totalPutAPI = 2;
+  const totalPostAPI = 2;
+  const [get, setGet] = useState(null);
+  const [post, setPost] = useState(null);
+  const [put, setPut] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingBeta, setIsLoadingBeta] = useState(false);
   const [isLoadingAlpha, setIsLoadingAlpha] = useState(false);
   const [stateLogin, setStateLogin] = useState({ username: "", password: "" });
-  const [alphaLogin, setAlphaLogin] = useState(null);
-  const [betaLogin, setBetaLogin] = useState(null);
-  const [getUserMeAlpha, setGetUserMeAlpha] = useState({});
-  const [getUserMeBeta, setGetUserMeBeta] = useState({});
-  const [getUserMeMetaAlpha, setGetUserMeMetaAlpha] = useState({});
-  const [getUserMeMetaBeta, setGetUserMeMetaBeta] = useState({});
-  const [getUserMeCohortAlpha, setGetUserMeCohortAlpha] = useState({});
-  const [getUserMeCohortBeta, setGetUserMeCohortBeta] = useState({});
-  const [getUserMeDevicesAlpha, setGetUserMeDevicesAlpha] = useState({});
-  const [getUserMeDevicesBeta, setGetUserMeDevicesBeta] = useState({});
-  const [getUserMeCertificationsAlpha, setGetUserMeCertificationsAlpha] = useState({});
-  const [getUserMeCertificationsBeta, setGetUserMeCertificationsBeta] = useState({});
-  const [getUserIdentityAlpha, setGetUserIdentityAlpha] = useState({});
-  const [getUserIdentityBeta, setGetUserIdentityBeta] = useState({});
-  const [getUserMeConnectionsSocialAlpha, setGetUserMeConnectionsSocialAlpha] = useState({});
-  const [getUserMeConnectionsSocialBeta, setGetUserMeConnectionsSocialBeta] = useState({});
   const [socialType, setSocialType] = useState("facebook");
-  const [get, setGet] = useState(null);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -35,60 +23,88 @@ function App() {
       ...stateLogin
     })
     setIsLoading(true);
-    setIsLoadingBeta(true)
-    setIsLoadingAlpha(true)
+    setIsLoadingBeta(true);
+    setIsLoadingAlpha(true);
 
     // call login alpha
     compareService.postLoginAlpha(stateLogin.username, stateLogin.password).then((res) => {
-      setAlphaLogin(res.data);
+      localStorage.setItem('userAlpha', JSON.stringify(res.data));
 
       // call get users/me/meta alpha
       compareService.getUserMeMetaAlpha(res.data.data.access_token, res.data.data.user.userId).then((res) => {
-        setGetUserMeMetaAlpha(res.data);
+        localStorage.setItem('userMeMetaAlpha', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeMetaAlpha(err.response.data);
+        localStorage.setItem('userMeMetaAlpha', JSON.stringify(err.response.data));
       })
 
       // call get users/me alpha
       compareService.getUserMeAlpha(res.data.data.access_token, res.data.data.user.userId).then((res) => {
-        setGetUserMeAlpha(res.data);
+        localStorage.setItem('userMeAlpha', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeAlpha(err.response.data);
+        localStorage.setItem('userMeAlpha', JSON.stringify(err.response.data));
       })
 
       // call get users/me/cohort alpha
       compareService.getUserMeCohortAlpha(res.data.data.access_token, res.data.data.user.userId).then((res) => {
-        setGetUserMeCohortAlpha(res.data);
+        localStorage.setItem('userMeCohortAlpha', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeCohortAlpha(err.response.data);
+        localStorage.setItem('userMeCohortApha', JSON.stringify(err.response.data));
       })
 
       // call get users/me/devices alpha
       compareService.getUserMeDevicesAlpha(res.data.data.access_token, res.data.data.user.userId).then((res) => {
-        setGetUserMeDevicesAlpha(res.data);
+        localStorage.setItem('userMeDevicesAlpha', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeDevicesAlpha(err.response.data);
+        localStorage.setItem('userMeDevicesBeta', err.response.data);
       })
 
       // call get users/me/certifications alpha
       compareService.getUserMeCertificationsAlpha(res.data.data.access_token, res.data.data.user.userId).then((res) => {
-        setGetUserMeCertificationsAlpha(res.data);
+        localStorage.setItem('userMeCertificationsAlpha', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeCertificationsAlpha(err.response.data);
+        localStorage.setItem('userMeCertificationsAlpha', JSON.stringify(err.response.data));
       })
 
       // call get users/me/identity alpha
       compareService.getUserIdentityAlpha(res.data.data.access_token).then((res) => {
-        setGetUserIdentityAlpha(res.data);
+        localStorage.setItem('userIdentityAlpha', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserIdentityAlpha(err.response.data);
+        localStorage.setItem('userIdentityAlpha', JSON.stringify(err.response.data));
       })
 
       // call get v2/users/{{me}/connections/Social alpha
       compareService.getUserMeConnectionsSocialAlpha(res.data.data.access_token, res.data.data.user.userId, socialType).then((res) => {
-        setGetUserMeConnectionsSocialAlpha(res.data);
+        localStorage.setItem('userMeConnectionsSocialAlpha', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeConnectionsSocialAlpha(err.response.data);
+        localStorage.setItem('userMeConnectionsSocialAlpha', JSON.stringify(err.response.data));
+      })
+
+      // call get v2/users/{{me}/genres alpha
+      compareService.getUserMeGenresAlpha(res.data.data.access_token, res.data.data.user.userId).then((res) => {
+        localStorage.setItem('userMeGenresAlpha', JSON.stringify(res.data));
+      }).catch((err) => {
+        localStorage.setItem('userMeGenresAlpha', JSON.stringify(err.response.data));
+      })
+
+      // call get v2/users/{{me}/balance alpha
+      compareService.getUserMeBalanceAlpha(res.data.data.access_token, res.data.data.user.userId).then((res) => {
+        localStorage.setItem('userMeBalanceAlpha', JSON.stringify(res.data));
+      }).catch((err) => {
+        localStorage.setItem('userMeBalanceAlpha', JSON.stringify(err.response.data));
+      })
+
+      // call get v2/users/{{me}/ga alpha
+      compareService.getUserMeGAAlpha(res.data.data.access_token, res.data.data.user.userId).then((res) => {
+        localStorage.setItem('userMeGaAlpha', JSON.stringify(res.data));
+      }).catch((err) => {
+        localStorage.setItem('userMeGaAlpha', JSON.stringify(err.response.data));
+      })
+
+      // call get v2/users/{{me}/BadgeCount alpha
+      compareService.getUserMeBadgeCountAlpha(res.data.data.access_token, res.data.data.user.userId).then((res) => {
+        localStorage.setItem('userMeBadgeCountAlpha', JSON.stringify(res.data));
+      }).catch((err) => {
+        localStorage.setItem('userMeBadgeCountAlpha', JSON.stringify(err.response.data));
       })
 
       //
@@ -99,75 +115,140 @@ function App() {
     }).catch((err) => {
       if (err.response) {
         setAlphaLogin(err.response.data);
+        setIsLoadingAlpha(false);
+        setIsLoadingBeta(false);
       }
     });
 
     // call login beta
     compareService.postLoginBeta(stateLogin.username, stateLogin.password).then((res) => {
-      setBetaLogin(res.data);
+      localStorage.setItem('userBeta', JSON.stringify(res.data));
 
       // call get users/me beta
       compareService.getUserMeBeta(res.data.data.access_token, res.data.data.user.userId).then((res) => {
-        setGetUserMeBeta(res.data);
+        localStorage.setItem('userMeMetaBeta', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeBeta(err.response.data);
+        localStorage.setItem('userMeMetaBeta', JSON.stringify(err.response.data));
       })
 
       // call get users/me/meta beta
       compareService.getUserMeMetaBeta(res.data.data.access_token, res.data.data.user.userId).then((res) => {
-        setGetUserMeMetaBeta(res.data);
+        localStorage.setItem('userMeBeta', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeMetaBeta(err.response.data);
+        localStorage.setItem('userMeBeta', JSON.stringify(err.response.data));
       })
 
       // call get users/me/cohort Beta
       compareService.getUserMeCohortBeta(res.data.data.access_token, res.data.data.user.userId).then((res) => {
-        setGetUserMeCohortBeta(res.data);
+        localStorage.setItem('userMeCohortBeta', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeCohortBeta(err.response.data);
+        localStorage.setItem('userMeCohortBeta', JSON.stringify(err.response.data));
       })
 
       // call get users/me/Devices Beta
       compareService.getUserMeDevicesBeta(res.data.data.access_token, res.data.data.user.userId).then((res) => {
-        setGetUserMeDevicesBeta(res.data);
+        localStorage.setItem('userMeDevicesBeta', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeDevicesBeta(err.response.data);
+        localStorage.setItem('userMeDevicesBeta', JSON.stringify(err.response.data));
       })
 
       // call get users/me/certifications Beta
       compareService.getUserMeCertificationsBeta(res.data.data.access_token, res.data.data.user.userId).then((res) => {
-        setGetUserMeCertificationsBeta(res.data);
+        localStorage.setItem('userMeCertificationsBeta', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeCertificationsBeta(err.response.data);
+        localStorage.setItem('userMeCertificationsBeta', JSON.stringify(err.response.data));
       })
 
       // call get users/me/identity Beta
       compareService.getUserIdentityBeta(res.data.data.access_token).then((res) => {
-        setGetUserIdentityBeta(res.data);
+        localStorage.setItem('userIdentityBeta', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserIdentityBeta(err.response.data);
+        localStorage.setItem('userIdentityBeta', JSON.stringify(err.response.data));
       })
 
       // call get v2/users/{{me}/connections/Social Beta
       compareService.getUserMeConnectionsSocialBeta(res.data.data.access_token, res.data.data.user.userId, socialType).then((res) => {
-        setGetUserMeConnectionsSocialBeta(res.data);
+        localStorage.setItem('userMeConnectionsSocialBeta', JSON.stringify(res.data));
       }).catch((err) => {
-        setGetUserMeConnectionsSocialBeta(err.response.data);
+        localStorage.setItem('userMeConnectionsSocialBeta', JSON.stringify(err.response.data));
       })
 
-      setIsLoadingBeta(false)
+      // call get v2/users/{{me}/genres Beta
+      compareService.getUserMeGenresBeta(res.data.data.access_token, res.data.data.user.userId).then((res) => {
+        localStorage.setItem('userMeGenresBeta', JSON.stringify(res.data));
+      }).catch((err) => {
+        localStorage.setItem('userMeGenresBeta', JSON.stringify(err.response.data));
+      })
+
+      // call get v2/users/{{me}/balance Beta
+      compareService.getUserMeBalanceBeta(res.data.data.access_token, res.data.data.user.userId).then((res) => {
+        localStorage.setItem('userMeBalanceBeta', JSON.stringify(res.data));
+      }).catch((err) => {
+        localStorage.setItem('userMeBalanceBeta', JSON.stringify(err.response.data));
+      })
+
+      // call get v2/users/{{me}/ga Beta
+      compareService.getUserMeGABeta(res.data.data.access_token, res.data.data.user.userId).then((res) => {
+        localStorage.setItem('userMeGaBeta', JSON.stringify(res.data));
+      }).catch((err) => {
+        localStorage.setItem('userMeGaBeta', JSON.stringify(err.response.data));
+      })
+
+      // call get v2/users/{{me}/BadgeCount Beta
+      compareService.getUserMeBadgeCountBeta(res.data.data.access_token, res.data.data.user.userId).then((res) => {
+        localStorage.setItem('userMeBadgeCountBeta', JSON.stringify(res.data));
+      }).catch((err) => {
+        localStorage.setItem('userMeBadgeCountBeta', JSON.stringify(err.response.data));
+      })
 
       //
 
+      setIsLoadingBeta(false)
+
+
     }).catch((err) => {
       if (err.response) {
-        setBetaLogin(err.response.data)
+        setBetaLogin(err.response.data);
       }
     });
-
   }
 
+  // get Local Storage Data ===========================================================================================================================
+  // get Local Storage Data ===========================================================================================================================
+
+  const userAlpha = JSON.parse(localStorage.getItem('userAlpha'));
+  const userMeMetaAlpha= JSON.parse(localStorage.getItem('userMeMetaAlpha'));
+  const userMeAlpha= JSON.parse(localStorage.getItem('userMeAlpha'));
+  const userMeCohortAlpha= JSON.parse(localStorage.getItem('userMeCohortAlpha'));
+  const userMeDevicesAlpha= JSON.parse(localStorage.getItem('userMeDevicesAlpha'));
+  const userMeCertificationsAlpha= JSON.parse(localStorage.getItem('userMeCertificationsAlpha'));
+  const userIdentityAlpha= JSON.parse(localStorage.getItem('userIdentityAlpha'));
+  const userMeConnectionsSocialAlpha = JSON.parse(localStorage.getItem('userMeConnectionsSocialAlpha'));
+  const userMeGenresAlpha = JSON.parse(localStorage.getItem('userMeGenresAlpha'));
+  const userMeBalanceAlpha = JSON.parse(localStorage.getItem('userMeBalanceAlpha'));
+  const userMeGaAlpha = JSON.parse(localStorage.getItem('userMeGaAlpha'));
+  const userMeBadgeCountAlpha = JSON.parse(localStorage.getItem('userMeBadgeCountAlpha'));
+
+  // ----
+
+  const userBeta = JSON.parse(localStorage.getItem('userBeta'));
+  const userMeMetaBeta = JSON.parse(localStorage.getItem('userMeMetaBeta'));
+  const userMeBeta = JSON.parse(localStorage.getItem('userMeBeta'));
+  const userMeCohortBeta = JSON.parse(localStorage.getItem('userMeCohortBeta'));
+  const userMeDevicesBeta = JSON.parse(localStorage.getItem('userMeDevicesBeta'));
+  const userMeCertificationsBeta = JSON.parse(localStorage.getItem('userMeCertificationsBeta'));
+  const userIdentityBeta = JSON.parse(localStorage.getItem('userIdentityBeta'));
+  const userMeConnectionsSocialBeta = JSON.parse(localStorage.getItem('userMeConnectionsSocialBeta'));
+  const userMeGenresBeta = JSON.parse(localStorage.getItem('userMeGenresBeta'));
+  const userMeBalanceBeta = JSON.parse(localStorage.getItem('userMeBalanceBeta'));
+  const userMeGaBeta = JSON.parse(localStorage.getItem('userMeGaBeta'));
+  const userMeBadgeCountBeta = JSON.parse(localStorage.getItem('userMeBadgeCountBeta'));
+
+  // handle request ===================================================================================================================================
+  // handle request ===================================================================================================================================
+
   const handleReload = () => {
+    localStorage.clear();
     window.location.reload();
   }
 
@@ -184,18 +265,45 @@ function App() {
     console.log(socialType);
   }
 
-  const handleGetPlus = () => {
-    if(get < totalGetAPI){
-    setGet(get + 1);
+  const handlePlus = (e) => {
+    if (e == 1 && get < totalGetAPI) {
+      setGet(get + 1);
+    } else if (e == 2 && put < totalPutAPI) {
+      setPut(put + 1);
+    } else if (e == 3 && post < totalPostAPI) {
+      setPost(post + 1);
     }
   }
+
+  const handleMinus = (e) => {
+    if (e == 1 && get > 1 && get) {
+      setGet(get - 1);
+    } else if (e == 2 && put && put > 1) {
+      setPut(put - 1);
+    } else if (e == 3 && post && post > 1) {
+      setPost(post - 1);
+    }
+  }
+
+  const handleDefault = (e) => {
+    if (e == 1) {
+      setGet(1);
+    } else if (e == 2) {
+      setPut(1);
+    } else if (e == 3) {
+      setPost(1);
+    }
+  }
+
+  // return ===========================================================================================================================
+  // return ===========================================================================================================================
 
   return (
     <div>
       <div className='container'>
         <div className='row'>
           <div className='col-4 ms-4 me-4 mt-4'>
-            {!betaLogin || !alphaLogin ?
+            {!userAlpha || !userBeta ?
               (
                 <>
                   <form onSubmit={(e) => handleLogin(e)}>
@@ -235,7 +343,7 @@ function App() {
                         style={{ padding: "5px 30px" }}
                         disabled={isLoading}
                       >
-                        <span>{isLoading ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : <>Login lezhin account</>}</span>
+                        <span>{isLoading ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" style={{ fontSize: 13 }}></span> : <><span style={{ fontSize: 14.5 }}>Login lezhin account</span></>}</span>
                       </button>
                     </div>
                   </form>
@@ -244,15 +352,16 @@ function App() {
               :
               (
                 <>
-                  <div className='ms-4 mt-5 text-center' style={{ fontSize: ".9rem" }}> <span className="title">- Alpha User:</span> {alphaLogin.data ? alphaLogin.data.user.username : (<>not found</>)} - {alphaLogin.data ? alphaLogin.data.user.userId : (<>not found</>)}
-                    <br /> <span className="title">- Beta User:</span> {betaLogin.data ? betaLogin.data.user.username : (<>not found</>)} - {betaLogin.data ? betaLogin.data.user.userId : <>not found</>}
+                  <div className='ms-4 mt-5' style={{ fontSize: 13 }}>
+                  <span className="title">- Alpha User:</span> {userAlpha ? userAlpha.data.user.username : (<>not found</>)} - {userAlpha.data ? userAlpha.data.user.userId : (<>not found</>)}
+                    <br /> <span className="title">- Beta User:</span> {userBeta.data ? userBeta.data.user.username : (<>not found</>)} - {userBeta.data ? userBeta.data.user.userId : <>not found</>}
                     <br />
                     <button
                       className="btn btn-primary btn-block mb ms-3 mt-2"
                       style={{ padding: "5px 30px" }}
                       onClick={handleReload}
                     >
-                      <span>Try other user</span>
+                      <span style={{ fontSize: 13 }}>Try other user</span>
                     </button>
                   </div>
                 </>
@@ -263,49 +372,36 @@ function App() {
 
         <hr />
 
-        <div className='ms-4'>
-          <div className='mb-2'> Addition GET Condition</div>
-
-          {/* socialType */}
-
-          <select className="form-select-sm" style={{ fontSize: '0.9rem' }} aria-label="Default select example"
-            id='socialType' value={socialType} onChange={handleSelectSocialType}
-          >
-            <option value="facebook" selected>social_type</option>
-            <option value="facebook">facebook</option>
-            <option value="naver">naver</option>
-            <option value="twitter">twitter</option>
-            <option value="google">google</option>
-            <option value="apple">apple</option>
-            <option value="yahoojapan">yahoojapan</option>
-            <option value="line">line</option>
-            <option value="kakao">kakao</option>
-          </select>
-
-          {/* socialType 2 */} &#160;
-
-          <select className="form-select-sm" style={{ fontSize: '0.9rem' }} aria-label="Default select example">
-            <option selected>social-type</option>
-            <option value="1">facebook</option>
-            <option value="2">naver</option>
-            <option value="3">twitter</option>
-            <option value="5">google</option>
-            <option value="6">apple</option>
-            <option value="7">yahoojapan</option>
-            <option value="8">line</option>
-            <option value="9">kakao</option>
-          </select>
-
-          {/* socialType */}
-        </div>
-
-        <hr></hr>
       </div>
       <div className='container-fluid'>
         <div className='row'>
           {/* sticky */}
 
-          <div className='col-lg-2'></div>
+          <div className='col-2 d-none d-lg-block'>
+            <div className='sticky-addition ms-4'>
+              <div className='mb-2 fw-bold text-success'> GET Condition</div>
+
+              {/* socialType */}
+
+              <select className="form-select-sm" style={{ fontSize: '0.9rem' }} aria-label="Default select example"
+                id='socialType' value={socialType} onChange={handleSelectSocialType}
+              >
+                <option value="facebook" selected>social_type</option>
+                <option value="facebook">facebook</option>
+                <option value="naver">naver</option>
+                <option value="twitter">twitter</option>
+                <option value="google">google</option>
+                <option value="apple">apple</option>
+                <option value="yahoojapan">yahoojapan</option>
+                <option value="line">line</option>
+                <option value="kakao">kakao</option>
+              </select>
+
+              <br></br>
+
+              {/* socialType */}
+            </div>
+          </div>
 
           <div className='col-8'>
 
@@ -315,177 +411,238 @@ function App() {
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(betaLogin, null, 2)) : (<>  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userBeta, null, 2)) : (<>  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(alphaLogin, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={betaLogin} newData={alphaLogin} />
+            <JsonCompare oldData={userBeta} newData={userAlpha} />
 
             {/* API get user me */}
-            <hr id='wrapper_get_1'/>
+            <hr id='wrapper_get_1' />
 
             <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'} </div>
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeBeta} newData={getUserMeAlpha} />
+            <JsonCompare oldData={userMeBeta} newData={userMeAlpha} />
 
             {/* API get user me meta */}
-            <hr id='wrapper_get_2'/>
+            <hr id='wrapper_get_2' />
 
             <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/meta </div>
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeMetaBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeMetaBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeMetaAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeMetaAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeMetaBeta} newData={getUserMeMetaAlpha} />
+            <JsonCompare oldData={userMeMetaBeta} newData={userMeMetaAlpha} />
 
             {/* API get user me cohort */}
+            <hr id='wrapper_get_3' />
 
             <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/cohort </div>
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeCohortBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeCohortBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeCohortAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeCohortAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeCohortBeta} newData={getUserMeCohortAlpha} />
+            <JsonCompare oldData={userMeCohortBeta} newData={userMeCohortAlpha} />
 
             {/* API get user me devices */}
-            <hr id='wrapper_get_3'/>
+            <hr id='wrapper_get_4' />
 
             <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/devices </div>
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeDevicesBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeDevicesBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeDevicesAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeDevicesAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeDevicesBeta} newData={getUserMeDevicesAlpha} />
+            <JsonCompare oldData={userMeDevicesBeta} newData={userMeDevicesAlpha} />
 
             {/* API get user me certifications */}
-            <hr id='wrapper_get_4'/>
+            <hr id='wrapper_get_5' />
 
             <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/certifications </div>
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeCertificationsBeta} newData={getUserMeCertificationsAlpha} />
+            <JsonCompare oldData={userMeCertificationsBeta} newData={userMeCertificationsAlpha} />
 
             {/* API get user me identity */}
-            <hr id='wrapper_get_5'/>
+            <hr id='wrapper_get_6' />
 
             <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/identity </div>
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserIdentityBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userIdentityBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserIdentityAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userIdentityAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserIdentityBeta} newData={getUserIdentityAlpha} />
-
-            {/* API get user me certifications */}
-            <hr id='wrapper_get_5'/>
-
-            <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/certifications </div>
-            <div className="origin-data pt-2">
-              <div className="old-data">
-                <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                  <span className='ps-2'>Calling API</span></>)}</pre>
-              </div>
-              <div className="new-data">
-                <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                  <span className='ps-2'>Calling API</span></>)}</pre>
-              </div>
-            </div>
-
-            <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeCertificationsBeta} newData={getUserMeCertificationsAlpha} />
+            <JsonCompare oldData={userIdentityBeta} newData={userIdentityAlpha} />
 
             {/* API get user me connections social */}
-            <hr id='wrapper_get_6'/>
+            <hr id='wrapper_get_7' />
 
-            <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/connections/{socialType} </div>
+            <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/connections/<span className='text-danger'>{socialType}</span> </div>
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeConnectionsSocialBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeConnectionsSocialBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeConnectionsSocialAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeConnectionsSocialAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeConnectionsSocialBeta} newData={getUserMeConnectionsSocialAlpha} />
+            <JsonCompare oldData={userMeConnectionsSocialBeta} newData={userMeConnectionsSocialAlpha} />
+
+            {/* API get user me genres */}
+            <hr id='wrapper_get_8' />
+
+            <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/genres </div>
+            <div className="origin-data pt-2">
+              <div className="old-data">
+                <p className="title">- Beta data:</p>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeGenresBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span className='ps-2'>Calling API</span></>)}</pre>
+              </div>
+              <div className="new-data">
+                <p className="title">- Alpha data:</p>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeGenresAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span className='ps-2'>Calling API</span></>)}</pre>
+              </div>
+            </div>
+
+            <p className="title">👌The merged different:</p>
+            <JsonCompare oldData={userMeGenresBeta} newData={userMeGenresAlpha} />
+
+            {/* API get user me balance */}
+            <hr id='wrapper_get_9' />
+
+            <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/balance </div>
+            <div className="origin-data pt-2">
+              <div className="old-data">
+                <p className="title">- Beta data:</p>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeBalanceBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span className='ps-2'>Calling API</span></>)}</pre>
+              </div>
+              <div className="new-data">
+                <p className="title">- Alpha data:</p>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeBalanceAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span className='ps-2'>Calling API</span></>)}</pre>
+              </div>
+            </div>
+
+            <p className="title">👌The merged different:</p>
+            <JsonCompare oldData={userMeBalanceBeta} newData={userMeBalanceAlpha} />
+
+            {/* API get user me ga */}
+            <hr id='wrapper_get_10' />
+
+            <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/ga </div>
+            <div className="origin-data pt-2">
+              <div className="old-data">
+                <p className="title">- Beta data:</p>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeGaBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span className='ps-2'>Calling API</span></>)}</pre>
+              </div>
+              <div className="new-data">
+                <p className="title">- Alpha data:</p>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeGaAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span className='ps-2'>Calling API</span></>)}</pre>
+              </div>
+            </div>
+
+            <p className="title">👌The merged different:</p>
+            <JsonCompare oldData={userMeGaBeta} newData={userMeGaAlpha} />
+
+            {/* API get user me badge-counts */}
+            <hr id='wrapper_get_11' />
+
+            <div> {'>'} <span className='text-success'> &#160;<strong>GET</strong></span> v2/users/{'{me}'}/badge-counts </div>
+            <div className="origin-data pt-2">
+              <div className="old-data">
+                <p className="title">- Beta data:</p>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeBadgeCountBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span className='ps-2'>Calling API</span></>)}</pre>
+              </div>
+              <div className="new-data">
+                <p className="title">- Alpha data:</p>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeBadgeCountAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span className='ps-2'>Calling API</span></>)}</pre>
+              </div>
+            </div>
+
+            <p className="title">👌The merged different:</p>
+            <JsonCompare oldData={userMeBadgeCountBeta} newData={userMeBadgeCountAlpha} />
 
             {/* ====================================PUT==================================== */}
             {/* API get user me devices */}
@@ -495,18 +652,18 @@ function App() {
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeCertificationsBeta} newData={getUserMeCertificationsAlpha} />
+            <JsonCompare oldData={userMeCertificationsBeta} newData={userMeCertificationsAlpha} />
 
             {/* ====================================POST==================================== */}
             {/* API get user me devices */}
@@ -516,18 +673,18 @@ function App() {
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeCertificationsBeta} newData={getUserMeCertificationsAlpha} />
+            <JsonCompare oldData={userMeCertificationsBeta} newData={userMeCertificationsAlpha} />
 
             {/* ====================================DEL==================================== */}
             {/* API get user me devices */}
@@ -537,18 +694,18 @@ function App() {
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeCertificationsBeta} newData={getUserMeCertificationsAlpha} />
+            <span className='h5'><JsonCompare oldData={userMeCertificationsBeta} newData={userMeCertificationsAlpha} /></span>
 
             {/* API get user me devices */}
             <hr />
@@ -557,33 +714,38 @@ function App() {
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(getUserMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(userMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(getUserMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={getUserMeCertificationsBeta} newData={getUserMeCertificationsAlpha} />
+            <JsonCompare oldData={userMeCertificationsBeta} newData={userMeCertificationsAlpha} />
 
 
           </div>
 
 
-
           <div className='col-2 d-none d-lg-block'>
             <div className='sticky'>
               <div className='btn-group-vertical wrapper_sidebar bg-muted'>
-                <button type="button" className="btn btn-light btn-md text-info" onClick={clickView} style={{ marginTop: '7rem', fontSize: '1.5rem' }} data-bs-toggle="tooltip" title="Up"><i className="fas fa-arrow-up"></i></button>
-                <a href={`#wrapper_get_${get}`}><button onClick={handleGetPlus} type="button" className="shake-btn btn btn-light btn-md text-success" style={{ fontSize: '1rem' }} data-bs-toggle="tooltip" title="Popular">&#160;GET+&#160;&#160;</button></a>
-                <a href='#wrapper_post'><button type="button" className="shake-btn btn btn-light btn-md text-warning" style={{ fontSize: '1rem' }} data-bs-toggle="tooltip" title="Office">POST</button></a>
-                <a href='#wrapper_put'><button type="button" className="shake-btn btn btn-light btn-md text-primary" style={{ fontSize: '1rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;PUT&#160;&#160;</button></a>
-                <a href='#wrapper_del'><button type="button" className="shake-btn btn btn-light btn-md text-danger" style={{ fontSize: '1rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;DEL&#160;&#160;</button></a>
-                <button type="button" className="btn btn-light btn-md text-info" onClick={clickDown} style={{ fontSize: '1.5rem' }} data-bs-toggle="tooltip" title="Down"><i className="fas fa-arrow-down"></i></button>
+                <button type="button" className="btn btn-light btn-md text-info" onClick={clickView} style={{ fontSize: '1.2rem' }} data-bs-toggle="tooltip" title="Up"><i className="fas fa-arrow-up"></i></button>
+                <a href={`#wrapper_get_${get}`}><button onClick={() => handleDefault(1)} type="button" className="shake-btn btn btn-light btn-md text-success" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Popular">&#160;&#160;GET&#160;&#160;&#160;</button></a>
+                <a href={`#wrapper_get_${get}`}><button onClick={() => handlePlus(1)} type="button" className="shake-btn btn btn-light btn-md text-success" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Popular">&#160;&#160;GET+&#160;</button></a>
+                <a href={`#wrapper_get_${get}`}><button onClick={() => handleMinus(1)} type="button" className="shake-btn btn btn-light btn-md text-success" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Popular">&#160;&#160;GET-&#160;&#160;</button></a>
+                <a href={`#wrapper_post_${post}`}><button onClick={() => handleDefault(3)} type="button" className="shake-btn btn btn-light btn-md text-warning" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Office">&#160;POST&#160;&#160;</button></a>
+                <a href={`#wrapper_post_${post}`}><button onClick={() => handlePlus(3)} type="button" className="shake-btn btn btn-light btn-md text-warning" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Office">&#160;POST+</button></a>
+                <a href={`#wrapper_post_${post}`}><button onClick={() => handleMinus(3)} type="button" className="shake-btn btn btn-light btn-md text-warning" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Office">&#160;POST-</button></a>
+                <a href={`#wrapper_put_${put}`}><button onClick={() => handleDefault(2)} type="button" className="shake-btn btn btn-light btn-md text-primary" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;&#160;PUT&#160;&#160;&#160;</button></a>
+                <a href={`#wrapper_put_${put}`}><button onClick={() => handlePlus(2)} type="button" className="shake-btn btn btn-light btn-md text-primary" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;&#160;PUT+&#160;</button></a>
+                <a href={`#wrapper_put_${put}`}><button onClick={() => handlePlus(2)} type="button" className="shake-btn btn btn-light btn-md text-primary" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;&#160;PUT-&#160;&#160;</button></a>
+                <a href='#wrapper_del'><button type="button" className="shake-btn btn btn-light btn-md text-danger" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;&#160;&#160;DEL&#160;&#160;&#160;</button></a>
+                <button type="button" className="btn btn-light btn-md text-info" onClick={clickDown} style={{ fontSize: '1.2rem' }} data-bs-toggle="tooltip" title="Down"><i className="fas fa-arrow-down"></i></button>
               </div>
             </div>
           </div>
