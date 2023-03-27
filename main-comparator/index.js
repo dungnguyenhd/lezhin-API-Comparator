@@ -16,6 +16,8 @@ function App() {
   const [isLoadingAlpha, setIsLoadingAlpha] = useState(false);
   const [stateLogin, setStateLogin] = useState({ username: "", password: "" });
   const [socialType, setSocialType] = useState("facebook");
+  const [isAutoPut, setIsAutoPut] = useState(true);
+  const [putUserMe, setPutUserMe] = useState({ locale: "ko-KR", isAdultFilterOn: true, birthDate: "19990304", gender: "male", agreements: { marketingEmail: true, collectingBirth: true } });
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -106,6 +108,16 @@ function App() {
       }).catch((err) => {
         localStorage.setItem('userMeBadgeCountAlpha', JSON.stringify(err.response.data));
       })
+
+      // call put users/{me} alpha
+
+      if (isAutoPut) {
+        compareService.putUserMeAlpha(res.data.data.access_token, res.data.data.user.userId, putUserMe).then((res) => {
+          localStorage.setItem('putUserMeAlpha', JSON.stringify(res.data));
+        }).catch((err) => {
+          localStorage.setItem('putUserMeAlpha', JSON.stringify(err.response.data));
+        })
+      }
 
       //
 
@@ -201,6 +213,15 @@ function App() {
         localStorage.setItem('userMeBadgeCountBeta', JSON.stringify(err.response.data));
       })
 
+      // call put users/{me} Beta
+      if (isAutoPut) {
+        compareService.putUserMeBeta(res.data.data.access_token, res.data.data.user.userId, putUserMe).then((res) => {
+          localStorage.setItem('putUserMeBeta', JSON.stringify(res.data));
+        }).catch((err) => {
+          localStorage.setItem('putUserMeBeta', JSON.stringify(err.response.data));
+        })
+      }
+
       //
 
       setIsLoadingBeta(false)
@@ -217,17 +238,18 @@ function App() {
   // get Local Storage Data ===========================================================================================================================
 
   const userAlpha = JSON.parse(localStorage.getItem('userAlpha'));
-  const userMeMetaAlpha= JSON.parse(localStorage.getItem('userMeMetaAlpha'));
-  const userMeAlpha= JSON.parse(localStorage.getItem('userMeAlpha'));
-  const userMeCohortAlpha= JSON.parse(localStorage.getItem('userMeCohortAlpha'));
-  const userMeDevicesAlpha= JSON.parse(localStorage.getItem('userMeDevicesAlpha'));
-  const userMeCertificationsAlpha= JSON.parse(localStorage.getItem('userMeCertificationsAlpha'));
-  const userIdentityAlpha= JSON.parse(localStorage.getItem('userIdentityAlpha'));
+  const userMeMetaAlpha = JSON.parse(localStorage.getItem('userMeMetaAlpha'));
+  const userMeAlpha = JSON.parse(localStorage.getItem('userMeAlpha'));
+  const userMeCohortAlpha = JSON.parse(localStorage.getItem('userMeCohortAlpha'));
+  const userMeDevicesAlpha = JSON.parse(localStorage.getItem('userMeDevicesAlpha'));
+  const userMeCertificationsAlpha = JSON.parse(localStorage.getItem('userMeCertificationsAlpha'));
+  const userIdentityAlpha = JSON.parse(localStorage.getItem('userIdentityAlpha'));
   const userMeConnectionsSocialAlpha = JSON.parse(localStorage.getItem('userMeConnectionsSocialAlpha'));
   const userMeGenresAlpha = JSON.parse(localStorage.getItem('userMeGenresAlpha'));
   const userMeBalanceAlpha = JSON.parse(localStorage.getItem('userMeBalanceAlpha'));
   const userMeGaAlpha = JSON.parse(localStorage.getItem('userMeGaAlpha'));
   const userMeBadgeCountAlpha = JSON.parse(localStorage.getItem('userMeBadgeCountAlpha'));
+  const putUserMeAlpha = JSON.parse(localStorage.getItem('putUserMeAlpha'));
 
   // ----
 
@@ -243,6 +265,7 @@ function App() {
   const userMeBalanceBeta = JSON.parse(localStorage.getItem('userMeBalanceBeta'));
   const userMeGaBeta = JSON.parse(localStorage.getItem('userMeGaBeta'));
   const userMeBadgeCountBeta = JSON.parse(localStorage.getItem('userMeBadgeCountBeta'));
+  const putUserMeBeta = JSON.parse(localStorage.getItem('putUserMeBeta'));
 
   // handle request ===================================================================================================================================
   // handle request ===================================================================================================================================
@@ -262,7 +285,14 @@ function App() {
 
   const handleSelectSocialType = (e) => {
     setSocialType(e.target.value);
-    console.log(socialType);
+  }
+
+  const handleSelectAutoPut = (e) => {
+    if (e.target.value == 'false') {
+      setIsAutoPut(false);
+    } else {
+      setIsAutoPut(true);
+    }
   }
 
   const handlePlus = (e) => {
@@ -295,6 +325,14 @@ function App() {
     }
   }
 
+  function openForm() {
+    document.getElementById("myForm").style.display = "block";
+  }
+
+  function closeForm() {
+    document.getElementById("myForm").style.display = "none";
+  }
+
   // return ===========================================================================================================================
   // return ===========================================================================================================================
 
@@ -311,6 +349,7 @@ function App() {
                       <label htmlFor="username" className='text-secondary' style={{ fontSize: ".9rem" }}>Email</label>
                       <input
                         type="email"
+                        style={{ fontSize: ".9rem" }}
                         className="form-control"
                         name="username"
                         aria-label="Search"
@@ -326,6 +365,7 @@ function App() {
                       <label htmlFor="password" className='text-secondary' style={{ fontSize: ".9rem" }}>Password</label>
                       <input
                         type="password"
+                        style={{ fontSize: ".9rem" }}
                         className="form-control"
                         aria-label="Search"
                         name="password"
@@ -353,7 +393,7 @@ function App() {
               (
                 <>
                   <div className='ms-4 mt-5' style={{ fontSize: 13 }}>
-                  <span className="title">- Alpha User:</span> {userAlpha ? userAlpha.data.user.username : (<>not found</>)} - {userAlpha.data ? userAlpha.data.user.userId : (<>not found</>)}
+                    <span className="title">- Alpha User:</span> {userAlpha ? userAlpha.data.user.username : (<>not found</>)} - {userAlpha.data ? userAlpha.data.user.userId : (<>not found</>)}
                     <br /> <span className="title">- Beta User:</span> {userBeta.data ? userBeta.data.user.username : (<>not found</>)} - {userBeta.data ? userBeta.data.user.userId : <>not found</>}
                     <br />
                     <button
@@ -382,11 +422,10 @@ function App() {
               <div className='mb-2 fw-bold text-success'> GET Condition</div>
 
               {/* socialType */}
-
+              Social Type &#160;
               <select className="form-select-sm" style={{ fontSize: '0.9rem' }} aria-label="Default select example"
                 id='socialType' value={socialType} onChange={handleSelectSocialType}
               >
-                <option value="facebook" selected>social_type</option>
                 <option value="facebook">facebook</option>
                 <option value="naver">naver</option>
                 <option value="twitter">twitter</option>
@@ -400,6 +439,24 @@ function App() {
               <br></br>
 
               {/* socialType */}
+
+              <div className='mb-2 mt-2 fw-bold text-primary'> PUT Condition</div>
+
+              {/* socialType */}
+
+              Auto fill PUT&#160;
+              <select className="form-select-sm" style={{ fontSize: '0.9rem' }} aria-label="Default select example"
+                id='socialType' value={isAutoPut} onChange={handleSelectAutoPut}
+              >
+                <option value="true">true</option>
+                <option value="false">false</option>
+              </select>
+
+              <br></br>
+
+              {/* socialType */}
+
+
             </div>
           </div>
 
@@ -645,25 +702,56 @@ function App() {
             <JsonCompare oldData={userMeBadgeCountBeta} newData={userMeBadgeCountAlpha} />
 
             {/* ====================================PUT==================================== */}
-            {/* API get user me devices */}
-            <hr id='wrapper_put' />
+            {/* API put user me */}
+            <hr id='wrapper_put_1' />
 
-            <div> {'>'} <span className='text-primary'> &#160;<strong>PUT</strong></span> v2/users/{'{me}'}/certifications </div>
+            <div>
+              {'>'} <span className='text-primary'> &#160;<strong>PUT</strong></span> v2/users/{'{me}'}
+              <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>
+
+              <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title" id="exampleModalLabel">New message</h5>
+                      <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div className="modal-body">
+                      <form>
+                        <div className="mb-3">
+                          <label htmlFor="recipient-name" className="col-form-label">Recipient:</label>
+                          <input type="text" className="form-control" id="recipient-name"/>
+                        </div>
+                        <div className="mb-3">
+                          <label htmlFor="message-text" className="col-form-label">Message:</label>
+                          <textarea className="form-control" id="message-text"></textarea>
+                        </div>
+                      </form>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" className="btn btn-primary">Send message</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="origin-data pt-2">
               <div className="old-data">
                 <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(userMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingBeta ? (JSON.stringify(putUserMeBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
               <div className="new-data">
                 <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <pre>{!isLoadingAlpha ? (JSON.stringify(putUserMeAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span className='ps-2'>Calling API</span></>)}</pre>
               </div>
             </div>
 
             <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={userMeCertificationsBeta} newData={userMeCertificationsAlpha} />
+            <JsonCompare oldData={putUserMeBeta} newData={putUserMeAlpha} />
 
             {/* ====================================POST==================================== */}
             {/* API get user me devices */}
@@ -707,27 +795,6 @@ function App() {
             <p className="title">👌The merged different:</p>
             <span className='h5'><JsonCompare oldData={userMeCertificationsBeta} newData={userMeCertificationsAlpha} /></span>
 
-            {/* API get user me devices */}
-            <hr />
-
-            <div> {'>'} <span className='text-danger'> &#160;<strong>DEL</strong></span> v2/users/{'{me}'}/certifications </div>
-            <div className="origin-data pt-2">
-              <div className="old-data">
-                <p className="title">- Beta data:</p>
-                <pre>{!isLoadingBeta ? (JSON.stringify(userMeCertificationsBeta, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                  <span className='ps-2'>Calling API</span></>)}</pre>
-              </div>
-              <div className="new-data">
-                <p className="title">- Alpha data:</p>
-                <pre>{!isLoadingAlpha ? (JSON.stringify(userMeCertificationsAlpha, null, 2)) : (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                  <span className='ps-2'>Calling API</span></>)}</pre>
-              </div>
-            </div>
-
-            <p className="title">👌The merged different:</p>
-            <JsonCompare oldData={userMeCertificationsBeta} newData={userMeCertificationsAlpha} />
-
-
           </div>
 
 
@@ -743,7 +810,7 @@ function App() {
                 <a href={`#wrapper_post_${post}`}><button onClick={() => handleMinus(3)} type="button" className="shake-btn btn btn-light btn-md text-warning" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Office">&#160;POST-</button></a>
                 <a href={`#wrapper_put_${put}`}><button onClick={() => handleDefault(2)} type="button" className="shake-btn btn btn-light btn-md text-primary" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;&#160;PUT&#160;&#160;&#160;</button></a>
                 <a href={`#wrapper_put_${put}`}><button onClick={() => handlePlus(2)} type="button" className="shake-btn btn btn-light btn-md text-primary" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;&#160;PUT+&#160;</button></a>
-                <a href={`#wrapper_put_${put}`}><button onClick={() => handlePlus(2)} type="button" className="shake-btn btn btn-light btn-md text-primary" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;&#160;PUT-&#160;&#160;</button></a>
+                <a href={`#wrapper_put_${put}`}><button onClick={() => handleMinus(2)} type="button" className="shake-btn btn btn-light btn-md text-primary" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;&#160;PUT-&#160;&#160;</button></a>
                 <a href='#wrapper_del'><button type="button" className="shake-btn btn btn-light btn-md text-danger" style={{ fontSize: '.9rem' }} data-bs-toggle="tooltip" title="Hot news">&#160;&#160;&#160;DEL&#160;&#160;&#160;</button></a>
                 <button type="button" className="btn btn-light btn-md text-info" onClick={clickDown} style={{ fontSize: '1.2rem' }} data-bs-toggle="tooltip" title="Down"><i className="fas fa-arrow-down"></i></button>
               </div>

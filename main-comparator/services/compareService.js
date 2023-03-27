@@ -9,14 +9,14 @@ class compareService {
   addNewAPI(header, endpoint, data, type) {
     const headers = header;
 
-    if(type == 'get'){
-      return axios.get(API_BASE_URL_ALPHA + endpoint, {data}, {headers});
+    if (type == 'get') {
+      return axios.get(API_BASE_URL_ALPHA + endpoint, { data }, { headers });
     } else if (type == 'post') {
-      return axios.post(API_BASE_URL_ALPHA + endpoint, {data}, {headers});
+      return axios.post(API_BASE_URL_ALPHA + endpoint, { data }, { headers });
     } else if (type == 'put') {
-      return axios.post(API_BASE_URL_ALPHA + endpoint, {data}, {headers});
+      return axios.post(API_BASE_URL_ALPHA + endpoint, { data }, { headers });
     } else if (type == 'del') {
-      return axios.post(API_BASE_URL_ALPHA + endpoint, {data}, {headers});
+      return axios.post(API_BASE_URL_ALPHA + endpoint, { data }, { headers });
     }
   }
 
@@ -218,13 +218,13 @@ class compareService {
     return axios.get(API_BASE_URL_BETA + `/v2/users/${userId}/ga`, { headers })
   }
 
-  // {{base_url}}/v2/users/{{me}/badge-counts}
+  // {{base_url}}/v2/users/{{me}/badge_counts}
   getUserMeBadgeCountAlpha(access_token, userId) {
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${access_token}`,
     };
-    return axios.get(API_BASE_URL_ALPHA + `/v2/users/${userId}/badge-counts`, { headers })
+    return axios.get(API_BASE_URL_ALPHA + `/v2/users/${userId}/badge_counts`, { headers })
   }
 
   getUserMeBadgeCountBeta(access_token, userId) {
@@ -232,7 +232,27 @@ class compareService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${access_token}`,
     };
-    return axios.get(API_BASE_URL_BETA + `/v2/users/${userId}/badge-counts`, { headers })
+    return axios.get(API_BASE_URL_BETA + `/v2/users/${userId}/badge_counts`, { headers })
+  }
+
+  // ====================================================== PUT =======================================================================================
+  // ====================================================== PUT =======================================================================================
+
+  putUserMeAlpha(access_token, userId, putData) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    };
+    console.log(putData);
+    return axios.put(API_BASE_URL_ALPHA + `/users/${userId}`, putData, { headers })
+  }
+
+  putUserMeBeta(access_token, userId, putData) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    };
+    return axios.put(API_BASE_URL_BETA + `/users/${userId}`, putData, { headers })
   }
 
 }
